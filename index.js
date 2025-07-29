@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const { Client, GatewayIntentBits } = require("discord.js");
 const axios = require("axios");
 
@@ -25,7 +27,7 @@ client.once("ready", () => {
   const readyCheck = async () => {
     try {
       const channel = await client.channels.fetch(CHANNEL_ID);
-      await channel.send("🟢 Status is now ONLINE!");
+      await channel.send("🟢 Bot is now ONLINE!");
     } catch (err) {
       console.error(`Failed to access channel ${CHANNEL_ID}:`, err);
     }
@@ -37,35 +39,47 @@ client.once("ready", () => {
     try {
       const res = await axios.get(STATUS_ENDPOINT);
       const status = res.data?.status;
+      const channel = await client.channels.fetch(CHANNEL_ID);
 
       if (status === "online" && !lastPostedOnline) {
-        const channel = await client.channels.fetch(CHANNEL_ID);
         await channel.send("🟢 Auth Server is now ONLINE!");
         lastPostedOnline = true;
       }
 
       if (status === "online" && !lastPostedKezanOnline) {
-        const channel = await client.channels.fetch(CHANNEL_ID);
         await channel.send("🟢 Kezan is now ONLINE!");
         lastPostedKezanOnline = true;
       }
 
       if (status === "online" && !lastPostedGurubashiOnline) {
-        const channel = await client.channels.fetch(CHANNEL_ID);
         await channel.send("🟢 Gurubashi is now ONLINE!");
         lastPostedGurubashiOnline = true;
       }
 
       if (status !== "online") {
+        if (lastPostedOnline) {
+          await channel.send("🔴 Auth Server is now OFFLINE!");
+        }
+        if (lastPostedKezanOnline) {
+          await channel.send("🔴 Kezan is now OFFLINE!");
+        }
+        if (lastPostedGurubashiOnline) {
+          await channel.send("🔴 Gurubashi is now OFFLINE!");
+        }
+
         lastPostedOnline = false;
         lastPostedKezanOnline = false;
         lastPostedGurubashiOnline = false;
       }
+
+      console.log("Checked server status");
     } catch (err) {
       console.error("Error checking status:", err.message);
     }
   }, CHECK_INTERVAL);
 });
+
+console.log(DISCORD_BOT_TOKEN);
 
 client.login(DISCORD_BOT_TOKEN);
 
