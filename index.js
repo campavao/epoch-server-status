@@ -23,8 +23,12 @@ client.once("ready", () => {
   console.log(`Logged in as ${client.user.tag}`);
 
   const readyCheck = async () => {
-    const channel = await client.channels.fetch(CHANNEL_ID);
-    await channel.send("🟢 Auth Server is now ONLINE!");
+    try {
+      const channel = await client.channels.fetch(channelId);
+      await channel.send("🟢 Status is now ONLINE!");
+    } catch (err) {
+      console.error(`Failed to access channel ${channelId}:`, err);
+    }
   };
 
   readyCheck();
