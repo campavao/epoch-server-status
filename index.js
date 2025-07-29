@@ -5,7 +5,7 @@ const axios = require("axios");
 
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CHANNEL_ID = process.env.CHANNEL_ID;
-const INTERVAL = process.env.INTERVAL ?? 60;
+const INTERVAL = parseInt(process.env.INTERVAL) ?? 60;
 const CHECK_INTERVAL = INTERVAL * 1000; // 60 seconds
 const STATUS_ENDPOINT =
   "https://project-epoch-tracker.onrender.com/api/status/realms";
