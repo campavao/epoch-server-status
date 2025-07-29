@@ -24,10 +24,10 @@ client.once("ready", () => {
 
   const readyCheck = async () => {
     try {
-      const channel = await client.channels.fetch(channelId);
+      const channel = await client.channels.fetch(CHANNEL_ID);
       await channel.send("🟢 Status is now ONLINE!");
     } catch (err) {
-      console.error(`Failed to access channel ${channelId}:`, err);
+      console.error(`Failed to access channel ${CHANNEL_ID}:`, err);
     }
   };
 
