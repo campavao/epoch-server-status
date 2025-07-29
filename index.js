@@ -3,7 +3,8 @@ const axios = require("axios");
 
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CHANNEL_ID = process.env.CHANNEL_ID;
-const CHECK_INTERVAL = 60 * 1000; // 60 seconds
+const INTERVAL = process.env.INTERVAL ?? 60;
+const CHECK_INTERVAL = INTERVAL * 1000; // 60 seconds
 const STATUS_ENDPOINT =
   "https://project-epoch-tracker.onrender.com/api/status/realms";
 
@@ -21,6 +22,13 @@ let lastPostedKezanOnline = false;
 client.once("ready", () => {
   console.log(`Logged in as ${client.user.tag}`);
 
+  const readyCheck = async () => {
+    const channel = await client.channels.fetch(CHANNEL_ID);
+    await channel.send("🟢 Auth Server is now ONLINE!");
+  };
+
+  readyCheck();
+
   setInterval(async () => {
     try {
       const res = await axios.get(STATUS_ENDPOINT);
@@ -30,19 +38,19 @@ client.once("ready", () => {
         const channel = await client.channels.fetch(CHANNEL_ID);
         await channel.send("🟢 Auth Server is now ONLINE!");
         lastPostedOnline = true;
-        }
+      }
 
       if (status === "online" && !lastPostedKezanOnline) {
         const channel = await client.channels.fetch(CHANNEL_ID);
         await channel.send("🟢 Kezan is now ONLINE!");
         lastPostedKezanOnline = true;
-        }
+      }
 
-        if (status === "online" && !lastPostedGurubashiOnline) {
-            const channel = await client.channels.fetch(CHANNEL_ID);
-            await channel.send("🟢 Gurubashi is now ONLINE!");
-            lastPostedGurubashiOnline = true;
-        }
+      if (status === "online" && !lastPostedGurubashiOnline) {
+        const channel = await client.channels.fetch(CHANNEL_ID);
+        await channel.send("🟢 Gurubashi is now ONLINE!");
+        lastPostedGurubashiOnline = true;
+      }
 
       if (status !== "online") {
         lastPostedOnline = false;
