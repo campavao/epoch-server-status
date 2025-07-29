@@ -20,6 +20,7 @@ const client = new Client({
 
 let lastPostedOnline = false;
 let lastPostedKezanOnline = false;
+let lastPostedGurubashiOnline = false;
 
 client.once("ready", () => {
   console.log(`Logged in as ${client.user.tag}`);
@@ -78,8 +79,6 @@ client.once("ready", () => {
     }
   }, CHECK_INTERVAL);
 });
-
-console.log(DISCORD_BOT_TOKEN);
 
 client.login(DISCORD_BOT_TOKEN);
 
