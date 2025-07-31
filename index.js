@@ -41,36 +41,48 @@ client.once("ready", () => {
       const res = await axios.get(STATUS_ENDPOINT);
       const status = res.data?.status;
       const channel = await client.channels.fetch(CHANNEL_ID);
+      const kezan = res.data?.realms?.find((realm) => realm.name === "Kezan");
+      const gurubashi = res.data?.realms?.find(
+        (realm) => realm.name === "Gurubashi"
+      );
 
-      if (status === "online" && !lastPostedOnline) {
+      const authServerOnline = res.data?.authServerStatus;
+      const kezanOnline = kezan?.worldServerOnline;
+      const gurubashiOnline = gurubashi?.worldServerOnline;
+
+      if (status === "online" && !lastPostedOnline && authServerOnline) {
         await channel.send("🟢 Auth Server is now ONLINE!");
         lastPostedOnline = true;
       }
 
-      if (status === "online" && !lastPostedKezanOnline) {
+      if (status === "online" && !lastPostedKezanOnline && kezanOnline) {
         await channel.send("🟢 Kezan is now ONLINE!");
         lastPostedKezanOnline = true;
       }
 
-      if (status === "online" && !lastPostedGurubashiOnline) {
+      if (
+        status === "online" &&
+        !lastPostedGurubashiOnline &&
+        gurubashiOnline
+      ) {
         await channel.send("🟢 Gurubashi is now ONLINE!");
         lastPostedGurubashiOnline = true;
       }
 
       if (status !== "online") {
-        if (lastPostedOnline) {
+        if (lastPostedOnline && !authServerOnline) {
           await channel.send("🔴 Auth Server is now OFFLINE!");
-        }
-        if (lastPostedKezanOnline) {
-          await channel.send("🔴 Kezan is now OFFLINE!");
-        }
-        if (lastPostedGurubashiOnline) {
-          await channel.send("🔴 Gurubashi is now OFFLINE!");
+          lastPostedOnline = false;
         }
 
-        lastPostedOnline = false;
-        lastPostedKezanOnline = false;
-        lastPostedGurubashiOnline = false;
+        if (lastPostedKezanOnline && !kezanOnline) {
+          await channel.send("🔴 Kezan is now OFFLINE!");
+          lastPostedKezanOnline = false;
+        }
+        if (lastPostedGurubashiOnline && !gurubashiOnline) {
+          await channel.send("🔴 Gurubashi is now OFFLINE!");
+          lastPostedGurubashiOnline = false;
+        }
       }
 
       console.log("Checked server status");
