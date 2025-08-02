@@ -31,7 +31,7 @@ client.once("ready", () => {
   const readyCheck = async () => {
     try {
       const channel = await client.channels.fetch(CHANNEL_ID);
-      // await channel.send("🟢 Bot is now ONLINE!");
+      await channel.send("🟢 Bot is now ONLINE!");
       console.log("Bot is now ONLINE!");
     } catch (err) {
       console.error(`Failed to access channel ${CHANNEL_ID}:`, err);
